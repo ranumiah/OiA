@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OiA", "OiA\OiA.csproj", "{50783782-0C2C-4149-9380-B9759A3F2C58}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OiA", "OiA\OiA.csproj", "{50783782-0C2C-4149-9380-B9759A3F2C58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OiA.Tests", "OiA.Tests\OiA.Tests.csproj", "{1B00F35C-9097-40F5-BC1E-7608FCC71049}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{50783782-0C2C-4149-9380-B9759A3F2C58}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50783782-0C2C-4149-9380-B9759A3F2C58}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50783782-0C2C-4149-9380-B9759A3F2C58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B00F35C-9097-40F5-BC1E-7608FCC71049}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B00F35C-9097-40F5-BC1E-7608FCC71049}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B00F35C-9097-40F5-BC1E-7608FCC71049}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B00F35C-9097-40F5-BC1E-7608FCC71049}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
