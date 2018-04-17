@@ -17,6 +17,29 @@ namespace OiA
             }
         }
 
+        public static string GenerateMd5Hash(byte[] input)
+        {
+            using (var hash = MD5.Create())
+            {
+                var result = hash.ComputeHash(input);
+                return Convert.ToBase64String(result);
+            }
+        }
+
+        public static string GenerateSHA256String(byte[] inputString)
+        {
+            SHA256 sha256 = SHA256.Create();
+            byte[] hash = sha256.ComputeHash(inputString);
+            return GetStringFromHash(hash);
+        }
+
+        public static string GenerateSHA512String(byte[] inputString)
+        {
+            SHA512 sha512 = SHA512.Create();
+            byte[] hash = sha512.ComputeHash(inputString);
+            return GetStringFromHash(hash);
+        }
+
         public static string GenerateSHA256String(string inputString)
         {
             SHA256 sha256 = SHA256.Create();

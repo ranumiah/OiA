@@ -27,25 +27,31 @@ namespace OiA.Tests
         [Test]
         public void CreateFileMd5Hash()
         {
-            var md5Hash = HashFile.GenerateMd5Hash(Path.Combine(testDirectory, "Aquatic Flowers.jpg"));
+            string file = Path.Combine(testDirectory, "Aquatic Flowers.jpg");
+            var readAllBytes = File.ReadAllBytes(file);
+            var md5Hash = HashFile.GenerateMd5Hash(readAllBytes);
 
-            Assert.That(md5Hash, Is.EqualTo("E? <??R\\!N%?=ZO?"));
+            Assert.That(md5Hash, Is.EqualTo("NdJc3rLrhh9t7AY+Yvx4pA=="));
         }
 
         [Test]
         public void CreateFileSha256Hash()
         {
-            var sha256Hash = HashFile.GenerateSHA256String(Path.Combine(testDirectory, "Aquatic Flowers.jpg"));
+            var file = Path.Combine(testDirectory, "Aquatic Flowers.jpg");
+            var readAllBytes = File.ReadAllBytes(file);
+            var sha256Hash = HashFile.GenerateSHA256String(readAllBytes);
 
-            Assert.That(sha256Hash, Is.EqualTo("0EA9E367888A6A8C6BEF55C5B10223346C9F8126F631CB39B61C974517D57CE8"));
+            Assert.That(sha256Hash, Is.EqualTo("34B6919D75D14DE1D8EF71F0ECB288FF47CAA37A475EF9063C0B42A75409A443"));
         }
 
         [Test]
         public void CreateFileSha512Hash()
         {
-            var sha256Hash = HashFile.GenerateSHA512String(Path.Combine(testDirectory, "Aquatic Flowers.jpg"));
+            var file = Path.Combine(testDirectory, "Aquatic Flowers.jpg");
+            var readAllBytes = File.ReadAllBytes(file);
+            var sha256Hash = HashFile.GenerateSHA512String(readAllBytes);
 
-            Assert.That(sha256Hash, Is.EqualTo("08696184B3DF7AF07EA1373831E83EA4F85AA5619FB0A99FFA50BA56A46B79862192426ABE9F4E600FCEC6649A8A5F0B1EB2DF5B1202CECF4A309C77E2BD9F12"));
+            Assert.That(sha256Hash, Is.EqualTo("7B9B401EFD2575EB1734F39CB93B74273632378B05E37B3C8DC9EE0F75BE901B0BE1EE63EA04476A72163F76B04A18C3136C30D4538D0AA38FCEAA780E3CCB43"));
         }
     }
 }
