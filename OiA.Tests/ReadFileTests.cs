@@ -15,12 +15,13 @@ namespace OiA.Tests
         {
             ReadFile readFile = new ReadFile();
 
-            FileDetail fileDetails = readFile.GetFileDetails(Path.Combine(testDirectory, "Aquatic Flowers.jpg"));
+            var testFile = Path.Combine(testDirectory, "Aquatic Flowers.jpg");
+            FileDetail fileDetails = readFile.GetFileDetails(testFile);
 
             Assert.That(fileDetails.FileName, Is.EqualTo("Aquatic Flowers.jpg"));
             Assert.That(fileDetails.FileExtension, Is.EqualTo(".jpg"));
             Assert.That(fileDetails.FileLength, Is.EqualTo(453438));
-            Assert.That(fileDetails.FileFullName, Is.EqualTo(@"C:\code\OiA\TestData\Aquatic Flowers.jpg"));
+            Assert.That(fileDetails.FileFullName, Is.EqualTo(testFile));
             Assert.That(fileDetails.FileLastWriteTimeUtc, Is.EqualTo(new DateTime(2015,09,21,11,28,40)));
         }
 
