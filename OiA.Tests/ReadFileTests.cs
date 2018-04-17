@@ -22,7 +22,6 @@ namespace OiA.Tests
             Assert.That(fileDetails.FileExtension, Is.EqualTo(".jpg"));
             Assert.That(fileDetails.FileLength, Is.EqualTo(453438));
             Assert.That(fileDetails.FileFullName, Is.EqualTo(testFile));
-            Assert.That(fileDetails.FileLastWriteTimeUtc, Is.EqualTo(new DateTime(2015,09,21,11,28,40)));
         }
 
         [Test]
