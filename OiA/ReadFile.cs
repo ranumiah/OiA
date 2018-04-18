@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using OiA.Repository;
 
 namespace OiA
 {
@@ -72,33 +73,18 @@ namespace OiA
     {
         public FileDetail GetFileDetails(string file)
         {
-            return new FileDetail(file);
+            var fileInfo = new FileInfo(file);
+            var fileDetail = new FileDetail();
+            fileDetail.FileName = fileInfo.Name;
+            fileDetail.FileLength = fileInfo.Length;
+            fileDetail.FileFullName = fileInfo.FullName;
+            fileDetail.FileExtension = fileInfo.Extension;
+            fileDetail.FileCreationTimeUtc = fileInfo.CreationTimeUtc;
+            fileDetail.FileLastWriteTimeUtc = fileInfo.LastWriteTimeUtc;
+            fileDetail.FileLastAccessTimeUtc = fileInfo.LastAccessTimeUtc;
+
+            return fileDetail;
         }
     }
-
-    public class FileDetail
-    {
-
-        public FileDetail(string filePath)
-        {
-            var file = new FileInfo(filePath);
-            FileName = file.Name;
-            FileLength = file.Length;
-            FileFullName = file.FullName;
-            FileExtension = file.Extension;
-            FileCreationTimeUtc = file.CreationTimeUtc;
-            FileLastWriteTimeUtc = file.LastWriteTimeUtc;
-            FileLastAccessTimeUtc = file.LastAccessTimeUtc;
-
-
-        }
-
-        public string FileName { get; }
-        public long FileLength { get; }
-        public string FileFullName { get; }
-        public string FileExtension { get; }
-        public DateTime FileCreationTimeUtc { get; }
-        public DateTime FileLastWriteTimeUtc { get; }
-        public DateTime FileLastAccessTimeUtc { get; }
-    }
+   
 }

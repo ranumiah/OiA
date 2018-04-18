@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using NLog;
 
 namespace OiA
@@ -11,8 +14,11 @@ namespace OiA
         {
             try
             {
-                Logger.Debug("init main");
-                Logger.Debug("Hello World!");
+                Logger.Debug($"OiA Started on {Environment.MachineName}");
+                var directories = Directory.GetDirectories("C:\\TestData", "*", SearchOption.AllDirectories).ToList();
+                var foo = Directory.GetFiles(@"C:\TestData", "*", SearchOption.AllDirectories).ToList();
+                Logger.Debug($"Number of Files: {foo.Count}");
+                Logger.Debug("OiA Finished");
             }
             catch (Exception ex)
             {

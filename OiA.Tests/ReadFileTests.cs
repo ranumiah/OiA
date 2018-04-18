@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Reflection;
 using NUnit.Framework;
 
@@ -16,7 +15,7 @@ namespace OiA.Tests
             ReadFile readFile = new ReadFile();
 
             var testFile = Path.Combine(testDirectory, "Aquatic Flowers.jpg");
-            FileDetail fileDetails = readFile.GetFileDetails(testFile);
+            var fileDetails = readFile.GetFileDetails(testFile);
 
             Assert.That(fileDetails.FileName, Is.EqualTo("Aquatic Flowers.jpg"));
             Assert.That(fileDetails.FileExtension, Is.EqualTo(".jpg"));
