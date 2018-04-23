@@ -19,8 +19,8 @@ namespace OiA.Repository
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
-                .UseLoggerFactory(MyConsoleLoggerFactory)
-                .EnableSensitiveDataLogging(true)
+                //.UseLoggerFactory(MyConsoleLoggerFactory)
+                //.EnableSensitiveDataLogging(true)
                 .UseSqlServer($"Server = {Environment.MachineName}; Database = OiA; Trusted_Connection = True; ");
         }
 
