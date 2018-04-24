@@ -21,7 +21,7 @@ namespace OiA
                 {
                     Logger.Debug($"OiA Started on {Environment.MachineName}");
 
-                    ParrellSearch(args[0]);
+                    ParrellFileSearch(args[0]);
 
                     Logger.Debug("DB Stuff Done");
                     Logger.Debug("OiA Finished");
@@ -41,6 +41,38 @@ namespace OiA
                 NLog.LogManager.Shutdown();
             }
         }
+
+        static void ParrellFileSearch(string rootFolder)
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+
+            var directories = Directory.GetDirectories(rootFolder, "*", SearchOption.AllDirectories).ToList();
+            long fileCount = 0;
+            var pendingFiles = new List<PendingFile>();
+            foreach (var directory in directories.AsParallel())
+            {
+                var files = Directory.GetFiles(directory, "*", SearchOption.TopDirectoryOnly);
+
+                foreach (var file in files.AsParallel())
+                {
+                    pendingFiles.Add(new PendingFile {FileFullName = file});
+                }
+
+                fileCount += files.Length;
+                if (pendingFiles.Count >= 10000)
+                {
+                    SaveToDb(pendingFiles);
+                    pendingFiles = new List<PendingFile>();
+                }
+            }
+
+            SaveToDb(pendingFiles);
+
+            timer.Stop();
+            Logger.Debug($"Number of Files (ParrellSearch): {fileCount} in {timer.Elapsed}");
+        }
+
 
         static void ParrellSearch(string rootFolder)
         {
@@ -88,11 +120,20 @@ namespace OiA
             return fileDetails;
         }
 
-        static void SaveToDb(List<FileDetail> files)
+        static void SaveToDb(IEnumerable<FileDetail> files)
         {
             using (OiAContextcs context = new OiAContextcs())
             {
                 context.FileSystem.AddRange(files);
+                context.SaveChanges();
+            }
+        }
+
+        static void SaveToDb(IEnumerable<PendingFile> files)
+        {
+            using (OiAContextcs context = new OiAContextcs())
+            {
+                context.PendingFile.AddRange(files);
                 context.SaveChanges();
             }
         }
