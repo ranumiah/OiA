@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace OiA.Repository
 {
@@ -49,6 +47,10 @@ namespace OiA.Repository
 
         [Column(Order = 11)]
         public DateTime FileLastAccessTimeUtc { get; set; }
+
+        [Column(Order = 12)]
+        [Required]
+        public string Status { get; set; } = ProcessStatus.New;
 
         [Timestamp]
         [Column(Order = 101)]

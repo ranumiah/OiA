@@ -15,6 +15,7 @@ namespace OiA.Repository
         });
 
         public DbSet<FileDetail> FileSystem { get; set; }
+        public DbSet<PendingFile> PendingFile { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
