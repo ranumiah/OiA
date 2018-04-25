@@ -108,21 +108,12 @@ namespace OiA
             var readFile = new ReadFile();
             var fileDetail = readFile.GetFileDetails(file);
 
-            if (fileDetail.FileLength < int.MaxValue)
+            if (fileDetail.Length < int.MaxValue)
             {
-                try
-                {
-                    var readAllBytes = File.ReadAllBytes(file);
+                var readAllBytes = File.ReadAllBytes(file);
 
-                    var hashFile = new HashFile();
-                    fileDetail.Md5Hash = hashFile.GenerateHash(readAllBytes);
-                    fileDetail.Sha256Hash = hashFile.GenerateHash(readAllBytes, HashType.SHA256);
-                    fileDetail.Sha512Hash = hashFile.GenerateHash(readAllBytes, HashType.SHA512);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
+                var hashFile = new HashFile();
+                fileDetail.Md5Hash = hashFile.GenerateHash(readAllBytes);
             }
 
             return fileDetail;

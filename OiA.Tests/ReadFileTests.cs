@@ -17,10 +17,10 @@ namespace OiA.Tests
             var testFile = Path.Combine(testDirectory, "Aquatic Flowers.jpg");
             var fileDetails = readFile.GetFileDetails(testFile);
 
-            Assert.That(fileDetails.FileName, Is.EqualTo("Aquatic Flowers.jpg"));
-            Assert.That(fileDetails.FileExtension, Is.EqualTo(".jpg"));
-            Assert.That(fileDetails.FileLength, Is.EqualTo(453438));
-            Assert.That(fileDetails.FileFullName, Is.EqualTo(testFile));
+            Assert.That(fileDetails.Name, Is.EqualTo("Aquatic Flowers.jpg"));
+            Assert.That(fileDetails.Extension, Is.EqualTo(".jpg"));
+            Assert.That(fileDetails.Length, Is.EqualTo(453438));
+            Assert.That(fileDetails.FullName, Is.EqualTo(testFile));
         }
 
         [Test]

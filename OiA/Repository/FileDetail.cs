@@ -7,53 +7,31 @@ namespace OiA.Repository
     public class FileDetail
     {
         [Key]
-        [Column(Order =  1)]
         [Required]
         public long Id { get; set; }
 
-        [Column(Order = 2)]
         [MaxLength(32)]
         public string Md5Hash { get; set; }
 
-        [Column(Order = 3)]
-        [MaxLength(64)]
-        public string Sha256Hash { get; set; }
-
-        [Column(Order = 4)]
-        [MaxLength(128)]
-        public string Sha512Hash { get; set; }
-
-        [Column(Order = 5)]
         [Required]
-        public string FileName { get; set; }
+        public string Name { get; set; }
 
-        [Column(Order = 6)]
         [Required]
-        public string FileFullName { get; set; }
+        public string FullName { get; set; }
 
-        [Column(Order = 7)]
         [Required]
-        public long FileLength { get; set; }
+        public long Length { get; set; }
 
-        [Column(Order = 8)]
         [Required]
-        public string FileExtension { get; set; }
+        public string Extension { get; set; }
 
-        [Column(Order = 9)]
         public DateTime FileCreationTimeUtc { get; set; }
 
-        [Column(Order = 10)]
         public DateTime FileLastWriteTimeUtc { get; set; }
 
-        [Column(Order = 11)]
         public DateTime FileLastAccessTimeUtc { get; set; }
 
-        [Column(Order = 12)]
         [Required]
         public string Status { get; set; } = ProcessStatus.New;
-
-        [Timestamp]
-        [Column(Order = 101)]
-        public Byte[] TimeStamp { get; set; }
     }
 }

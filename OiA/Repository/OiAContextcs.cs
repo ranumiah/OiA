@@ -31,16 +31,6 @@ namespace OiA.Repository
                 .HasIndex(x => x.Md5Hash)
                 .IsUnique(false)
                 .ForSqlServerIsClustered(false);
-
-            modelBuilder.Entity<FileDetail>()
-                .HasIndex(x => x.Sha256Hash)
-                .IsUnique(false)
-                .ForSqlServerIsClustered(false);
-
-            modelBuilder.Entity<FileDetail>()
-                .HasIndex(x => x.Sha512Hash)
-                .IsUnique(false)
-                .ForSqlServerIsClustered(false);
         }
     }
 }

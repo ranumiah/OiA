@@ -8,14 +8,16 @@ namespace OiA
         public FileDetail GetFileDetails(string file)
         {
             var fileInfo = new FileInfo(file);
-            var fileDetail = new FileDetail();
-            fileDetail.FileName = fileInfo.Name;
-            fileDetail.FileLength = fileInfo.Length;
-            fileDetail.FileFullName = fileInfo.FullName;
-            fileDetail.FileExtension = fileInfo.Extension;
-            fileDetail.FileCreationTimeUtc = fileInfo.CreationTimeUtc;
-            fileDetail.FileLastWriteTimeUtc = fileInfo.LastWriteTimeUtc;
-            fileDetail.FileLastAccessTimeUtc = fileInfo.LastAccessTimeUtc;
+            var fileDetail = new FileDetail
+            {
+                Name = fileInfo.Name,
+                Length = fileInfo.Length,
+                FullName = fileInfo.FullName,
+                Extension = fileInfo.Extension,
+                FileCreationTimeUtc = fileInfo.CreationTimeUtc,
+                FileLastWriteTimeUtc = fileInfo.LastWriteTimeUtc,
+                FileLastAccessTimeUtc = fileInfo.LastAccessTimeUtc
+            };
 
             return fileDetail;
         }

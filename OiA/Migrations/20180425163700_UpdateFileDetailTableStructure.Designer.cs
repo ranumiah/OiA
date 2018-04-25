@@ -11,9 +11,10 @@ using System;
 namespace OiA.Migrations
 {
     [DbContext(typeof(OiAContextcs))]
-    partial class OiAContextcsModelSnapshot : ModelSnapshot
+    [Migration("20180425163700_UpdateFileDetailTableStructure")]
+    partial class UpdateFileDetailTableStructure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
