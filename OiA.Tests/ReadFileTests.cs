@@ -28,9 +28,11 @@ namespace OiA.Tests
         {
             string file = Path.Combine(testDirectory, "Aquatic Flowers.jpg");
             var readAllBytes = File.ReadAllBytes(file);
-            var md5Hash = HashFile.GenerateMd5Hash(readAllBytes);
 
-            Assert.That(md5Hash, Is.EqualTo("NdJc3rLrhh9t7AY+Yvx4pA=="));
+            var hashFile = new HashFile();
+            var md5Hash = hashFile.GenerateHash(readAllBytes);
+
+            Assert.That(md5Hash, Is.EqualTo("35D25CDEB2EB861F6DEC063E62FC78A4"));
         }
 
         [Test]
@@ -38,7 +40,8 @@ namespace OiA.Tests
         {
             var file = Path.Combine(testDirectory, "Aquatic Flowers.jpg");
             var readAllBytes = File.ReadAllBytes(file);
-            var sha256Hash = HashFile.GenerateSHA256String(readAllBytes);
+            var hashFile = new HashFile();
+            var sha256Hash = hashFile.GenerateHash(readAllBytes, HashType.SHA256);
 
             Assert.That(sha256Hash, Is.EqualTo("34B6919D75D14DE1D8EF71F0ECB288FF47CAA37A475EF9063C0B42A75409A443"));
         }
@@ -48,7 +51,8 @@ namespace OiA.Tests
         {
             var file = Path.Combine(testDirectory, "Aquatic Flowers.jpg");
             var readAllBytes = File.ReadAllBytes(file);
-            var sha256Hash = HashFile.GenerateSHA512String(readAllBytes);
+            var hashFile = new HashFile();
+            var sha256Hash = hashFile.GenerateHash(readAllBytes, HashType.SHA512);
 
             Assert.That(sha256Hash, Is.EqualTo("7B9B401EFD2575EB1734F39CB93B74273632378B05E37B3C8DC9EE0F75BE901B0BE1EE63EA04476A72163F76B04A18C3136C30D4538D0AA38FCEAA780E3CCB43"));
         }

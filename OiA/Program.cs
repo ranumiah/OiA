@@ -23,12 +23,15 @@ namespace OiA
 
                     ParrellFileSearch(args[0]);
 
-                    Logger.Debug("DB Stuff Done");
                     Logger.Debug("OiA Finished");
                 }
                 else
                 {
-                    Logger.Error("Must provide with root folder path");
+                    Logger.Debug($"OiA Started on {Environment.MachineName}");
+
+                    ParrellProcessFiles();
+
+                    Logger.Debug("OiA Finished");
                 }
             }
             catch (Exception ex)
@@ -74,23 +77,21 @@ namespace OiA
         }
 
 
-        static void ParrellSearch(string rootFolder)
+        static void ParrellProcessFiles()
         {
             Stopwatch timer = new Stopwatch();
             timer.Start();
-
-            var directories = Directory.GetDirectories(rootFolder, "*", SearchOption.AllDirectories).ToList();
-            long fileCount = 0;
             var processFiles = new List<FileDetail>();
-            foreach (var directory in directories.AsParallel())
+            foreach (var files in GetFileToProcess().AsParallel())
             {
-                var files = Directory.GetFiles(directory, "*", SearchOption.TopDirectoryOnly);
                 var fileDetails = ProcessFiles(files);
-                processFiles.AddRange(fileDetails);
-                fileCount += processFiles.Count;
-                if (processFiles.Count >= 10000)
+
+                processFiles.Add(fileDetails);
+                if (processFiles.Count >= 50000)
                 {
+                    Logger.Debug($"Save to database 50000 Processed File");
                     SaveToDb(processFiles);
+                    Logger.Debug($"Database operation completed");
                     processFiles = new List<FileDetail>();
                 }
             }
@@ -98,26 +99,24 @@ namespace OiA
             SaveToDb(processFiles);
 
             timer.Stop();
-            Logger.Debug($"Number of Files (ParrellSearch): {fileCount} in {timer.Elapsed}");
         }
 
-        static List<FileDetail> ProcessFiles(IEnumerable<string> files)
+        static FileDetail ProcessFiles(string file)
         {
-            var fileDetails = new List<FileDetail>();
-            ReadFile readFile = new ReadFile();
-            foreach (var file in files.AsParallel())
+            var readFile = new ReadFile();
+            var fileDetail = readFile.GetFileDetails(file);
+
+            if (fileDetail.FileLength < int.MaxValue)
             {
-                var fileDetail = readFile.GetFileDetails(file);
                 var readAllBytes = File.ReadAllBytes(file);
 
-                fileDetail.Md5Hash = HashFile.GenerateMd5Hash(readAllBytes);
-                fileDetail.Sha256Hash = HashFile.GenerateSHA256String(readAllBytes);
-                fileDetail.Sha512Hash = HashFile.GenerateSHA512String(readAllBytes);
-
-                fileDetails.Add(fileDetail);
+                var hashFile = new HashFile();
+                fileDetail.Md5Hash = hashFile.GenerateHash(readAllBytes);
+                fileDetail.Sha256Hash = hashFile.GenerateHash(readAllBytes, HashType.SHA256);
+                fileDetail.Sha512Hash = hashFile.GenerateHash(readAllBytes, HashType.SHA512);
             }
 
-            return fileDetails;
+            return fileDetail;
         }
 
         static void SaveToDb(IEnumerable<FileDetail> files)
@@ -135,6 +134,15 @@ namespace OiA
             {
                 context.PendingFile.AddRange(files);
                 context.SaveChanges();
+            }
+        }
+
+        static List<string> GetFileToProcess()
+        {
+            using (OiAContextcs context = new OiAContextcs())
+            {
+                var files = context.PendingFile.Select(x => x.FileFullName).ToList();
+                return files;
             }
         }
     }
