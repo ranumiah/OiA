@@ -21,7 +21,7 @@ namespace OiA
                 {
                     Logger.Debug($"OiA Started on {Environment.MachineName}");
 
-                    ParrellFileSearch(args[0]);
+                    FileSearch(args[0]);
 
                     Logger.Debug("OiA Finished");
                 }
@@ -29,7 +29,7 @@ namespace OiA
                 {
                     Logger.Debug($"OiA Started on {Environment.MachineName}");
 
-                    ParrellProcessFiles();
+                    ProcessFiles();
 
                     Logger.Debug("OiA Finished");
                 }
@@ -45,7 +45,7 @@ namespace OiA
             }
         }
 
-        static void ParrellFileSearch(string rootFolder)
+        static void FileSearch(string rootFolder)
         {
             Stopwatch timer = new Stopwatch();
             timer.Start();
@@ -57,7 +57,7 @@ namespace OiA
             {
                 var files = Directory.GetFiles(directory, "*", SearchOption.TopDirectoryOnly);
 
-                foreach (var file in files.AsParallel())
+                foreach (var file in files)
                 {
                     pendingFiles.Add(new PendingFile {FileFullName = file});
                 }
@@ -65,7 +65,9 @@ namespace OiA
                 fileCount += files.Length;
                 if (pendingFiles.Count >= 10000)
                 {
+                    Logger.Debug($"Save to database 10000 Processed File");
                     SaveToDb(pendingFiles);
+                    Logger.Debug($"Database operation completed");
                     pendingFiles = new List<PendingFile>();
                 }
             }
@@ -77,14 +79,14 @@ namespace OiA
         }
 
 
-        static void ParrellProcessFiles()
+        static void ProcessFiles()
         {
             Stopwatch timer = new Stopwatch();
             timer.Start();
             var processFiles = new List<FileDetail>();
             foreach (var files in GetFileToProcess().AsParallel())
             {
-                var fileDetails = ProcessFiles(files);
+                var fileDetails = GetFileDetail(files);
 
                 processFiles.Add(fileDetails);
                 if (processFiles.Count >= 50000)
@@ -101,19 +103,26 @@ namespace OiA
             timer.Stop();
         }
 
-        static FileDetail ProcessFiles(string file)
+        static FileDetail GetFileDetail(string file)
         {
             var readFile = new ReadFile();
             var fileDetail = readFile.GetFileDetails(file);
 
             if (fileDetail.FileLength < int.MaxValue)
             {
-                var readAllBytes = File.ReadAllBytes(file);
+                try
+                {
+                    var readAllBytes = File.ReadAllBytes(file);
 
-                var hashFile = new HashFile();
-                fileDetail.Md5Hash = hashFile.GenerateHash(readAllBytes);
-                fileDetail.Sha256Hash = hashFile.GenerateHash(readAllBytes, HashType.SHA256);
-                fileDetail.Sha512Hash = hashFile.GenerateHash(readAllBytes, HashType.SHA512);
+                    var hashFile = new HashFile();
+                    fileDetail.Md5Hash = hashFile.GenerateHash(readAllBytes);
+                    fileDetail.Sha256Hash = hashFile.GenerateHash(readAllBytes, HashType.SHA256);
+                    fileDetail.Sha512Hash = hashFile.GenerateHash(readAllBytes, HashType.SHA512);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
             }
 
             return fileDetail;
