@@ -10,7 +10,7 @@ namespace OiA
             var fileInfo = new FileInfo(file);
             var fileDetail = new FileDetail
             {
-                Name = fileInfo.Name,
+                Name = fileInfo.Name.Replace(fileInfo.Extension, string.Empty),
                 Length = fileInfo.Length,
                 FullName = fileInfo.FullName,
                 Extension = fileInfo.Extension,
