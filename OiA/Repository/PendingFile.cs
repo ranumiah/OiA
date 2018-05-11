@@ -6,8 +6,10 @@ namespace OiA.Repository
     public class PendingFile
     {
         [Key]
-        [Column(Order = 0)]
         [Required]
         public string FileFullName { get; set; }
+
+        [Required]
+        public string Status { get; set; } = ProcessStatus.New;
     }
 }

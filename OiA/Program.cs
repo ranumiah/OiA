@@ -84,14 +84,22 @@ namespace OiA
             Stopwatch timer = new Stopwatch();
             timer.Start();
             var processFiles = new List<FileDetail>();
-            foreach (var files in GetFileToProcess().AsParallel())
+            foreach (var file in GetFileToProcess().AsParallel())
             {
-                var fileDetails = GetFileDetail(files);
-
-                processFiles.Add(fileDetails);
-                if (processFiles.Count >= 50000)
+                try
                 {
-                    Logger.Debug($"Save to database 50000 Processed File");
+                    var fileDetails = GetFileDetail(file);
+                    processFiles.Add(fileDetails);
+                }
+                catch (Exception e)
+                {
+                    SaveToDb(file, e.Message);
+                    Logger.Error(e, "Stopped program because of exception");
+                }
+
+                if (processFiles.Count >= 10000)
+                {
+                    Logger.Debug($"Save to database 10000 Processed File");
                     SaveToDb(processFiles);
                     Logger.Debug($"Database operation completed");
                     processFiles = new List<FileDetail>();
@@ -111,7 +119,6 @@ namespace OiA
             if (fileDetail.Length < int.MaxValue)
             {
                 var readAllBytes = File.ReadAllBytes(file);
-
                 var hashFile = new HashFile();
                 fileDetail.Md5Hash = hashFile.GenerateHash(readAllBytes);
             }
@@ -123,7 +130,12 @@ namespace OiA
         {
             using (OiAContextcs context = new OiAContextcs())
             {
-                context.FileSystem.AddRange(files);
+                var fileDetails = files.ToList();
+                foreach (var file in fileDetails)
+                {
+                    context.PendingFile.Single(x => x.FileFullName == file.FullName).Status = ProcessStatus.Complete;
+                }
+                context.FileSystem.AddRange(fileDetails);
                 context.SaveChanges();
             }
         }
@@ -137,11 +149,20 @@ namespace OiA
             }
         }
 
+        static void SaveToDb(string file, string message)
+        {
+            using (OiAContextcs context = new OiAContextcs())
+            {
+                context.PendingFile.Single(x => x.FileFullName == file).Status = ProcessStatus.Error + message;
+                context.SaveChanges();
+            }
+        }
+
         static List<string> GetFileToProcess()
         {
             using (OiAContextcs context = new OiAContextcs())
             {
-                var files = context.PendingFile.Select(x => x.FileFullName).ToList();
+                var files = context.PendingFile.Where(x => x.Status == ProcessStatus.New).Select(x => x.FileFullName).ToList();
                 return files;
             }
         }
