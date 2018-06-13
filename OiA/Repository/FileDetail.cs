@@ -13,6 +13,12 @@ namespace OiA.Repository
         [MaxLength(32)]
         public string Md5Hash { get; set; }
 
+        [MaxLength(64)]
+        public string Sha256Hash { get; set; }
+
+        [MaxLength(128)]
+        public string Sha512Hash { get; set; }
+
         [Required]
         public string Name { get; set; }
 
@@ -33,5 +39,8 @@ namespace OiA.Repository
 
         [Required]
         public string Status { get; set; } = ProcessStatus.New;
+
+        [Timestamp]
+        public Byte[] TimeStamp { get; set; }
     }
 }
