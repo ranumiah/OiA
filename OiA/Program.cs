@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using NLog;
 using OiA.Repository;
 
@@ -17,6 +18,7 @@ namespace OiA
         {
             try
             {
+
                 if (args.Length == 1)
                 {
                     Logger.Debug($"OiA Started on {Environment.MachineName}");
@@ -24,6 +26,23 @@ namespace OiA
                     FileSearch(args[0]);
 
                     Logger.Debug("OiA Finished");
+                }
+                else if (args.Length == 2)
+                {
+                    var deDupFile = GetDeDupFile();
+                    var hashYear = new HashSet<int>();
+                    var hashMonth = new HashSet<int>();
+                    var hashDay = new HashSet<int>();
+                    foreach (var fileDetail in deDupFile)
+                    {
+                        hashYear.Add(fileDetail.FileCreationTimeUtc.Year);
+                        hashMonth.Add(fileDetail.FileCreationTimeUtc.Month);
+                        hashDay.Add(fileDetail.FileCreationTimeUtc.Day);
+
+                        // go off and create the folder structure for copy
+                        // then make a list of files to copy to
+                        // then actually copy. in what mode? override or database verified.
+                    }
                 }
                 else
                 {
@@ -165,6 +184,39 @@ namespace OiA
                 var files = context.PendingFile.Where(x => x.Status == ProcessStatus.New).Select(x => x.FileFullName).ToList();
                 return files;
             }
+        }
+
+        static List<FileDetail> GetDeDupFile()
+        {
+            Dictionary<string, List<FileDetail>> database = new Dictionary<string, List<FileDetail>>();
+            using (OiAContextcs context = new OiAContextcs())
+            {
+                foreach (var fileDetail in context.FileSystem.OrderBy(x => x.FileLastWriteTimeUtc).ThenBy(x => x.FileCreationTimeUtc).ThenBy(x => x.FileLastAccessTimeUtc))
+                {
+                    if (fileDetail.Md5Hash != null)
+                    {
+                        if (database.ContainsKey(fileDetail.Md5Hash))
+                        {
+                            database[fileDetail.Md5Hash].Add(fileDetail);
+                        }
+                        else
+                        {
+                            database.Add(fileDetail.Md5Hash, new List<FileDetail> {fileDetail});
+                        }
+                    }
+                }
+            }
+
+            List<FileDetail> uniqueData = new List<FileDetail>();
+            foreach (var fileDetails in database.Values)
+            {
+                if (fileDetails.Count >= 1)
+                {
+                    uniqueData.Add(fileDetails.First());
+                }
+            }
+
+            return uniqueData;
         }
     }
 }
